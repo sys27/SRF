@@ -1,0 +1,75 @@
+﻿<Window x:Class="SRF.View.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:command="clr-namespace:SRF.Command"
+        xmlns:converters="clr-namespace:SRF.Converters"
+        xmlns:res="clr-namespace:SRF.Resources"
+        Title="SRF" Height="247" Width="480" WindowStartupLocation="CenterScreen"
+        ResizeMode="CanMinimize"
+        Icon="../images/icon.ico">
+    <Window.Resources>
+        <command:CommandReference x:Key="SendCommandReference" Command="{Binding SendCommand}" />
+        <command:CommandReference x:Key="ReceiveCommandReference" Command="{Binding ReceiveCommand}" />
+        <command:CommandReference x:Key="ExitCommandReference" Command="{Binding ExitCommand}" />
+        <converters:SizeConverter x:Key="sizeConverter" />
+        <converters:SpeedConverter x:Key="speedConverter" />
+    </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Command="{StaticResource SendCommandReference}" Modifiers="Ctrl" Key="S" />
+        <KeyBinding Command="{StaticResource ReceiveCommandReference}" Modifiers="Ctrl" Key="R" />
+        <KeyBinding Command="{StaticResource ExitCommandReference}" Modifiers="Alt" Key="F4" />
+    </Window.InputBindings>
+    
+    <Grid>
+    	<Grid.RowDefinitions>
+    		<RowDefinition Height="24" />
+    		<RowDefinition Height="*" />
+    	</Grid.RowDefinitions>
+        
+    	<Menu>
+    		<MenuItem Header="{x:Static res:Resource.FileMenu}">
+                <MenuItem Header="{x:Static res:Resource.SendMenuItem}" Command="{Binding SendCommand}" InputGestureText="Ctrl+S" />
+                <MenuItem Header="{x:Static res:Resource.ReceiveMenuItem}" Command="{Binding ReceiveCommand}" InputGestureText="Ctrl+R" />
+    			<Separator />
+                <MenuItem Header="{x:Static res:Resource.ExitMenuItem}" Command="{Binding ExitCommand}" InputGestureText="Alt+F4" />
+    		</MenuItem>
+        </Menu>
+
+        <TextBlock HorizontalAlignment="Left" Margin="8,8,0,0" Grid.Row="1" VerticalAlignment="Top" Height="16" Width="458" Text="{x:Static res:Resource.ActionBox}">
+            <Run Text="{Binding Server.Action}" />
+            <Run Text="(" />
+            <Run Text="{Binding Server.CurrentFileCount}" />
+            <Run Text="/" />
+            <Run Text="{Binding Server.FilesCount}" />
+            <Run Text=")" />
+        </TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="8,28,0,0" Grid.Row="1" Text="{x:Static res:Resource.FileBox}" VerticalAlignment="Top" Height="16" Width="458">
+            <TextBlock Text="{Binding Server.FileName}" />
+        </TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="8,48,0,0" Grid.Row="1" VerticalAlignment="Top" Width="458" Height="16">
+            <TextBlock.Text>
+                <MultiBinding Converter="{StaticResource sizeConverter}" ConverterParameter="{x:Static res:Resource.SizeBox}">
+                    <Binding Path="Server.CurrentSize" />
+                    <Binding Path="Server.CurrentFullSize" />
+                    <Binding Path="Server.Size" />
+                    <Binding Path="Server.FullSize" />
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="8,68,0,0" Grid.Row="1" Text="{Binding Server.Speed, ConverterParameter={x:Static res:Resource.SpeedBox}, Converter={StaticResource speedConverter}}" VerticalAlignment="Top" Width="458" Height="16" />
+
+        <TextBlock HorizontalAlignment="Left" Margin="8,0,0,84" Grid.Row="1" Text="{x:Static res:Resource.CurrentProgressBox}" VerticalAlignment="Bottom" Height="15.96" />
+        <TextBlock HorizontalAlignment="Right" Margin="0,95,8,84" Grid.Row="1">
+            <Run Text="{Binding Server.CurrentProgress}" />
+            <Run Text="%" />
+        </TextBlock>
+    	<ProgressBar Margin="8,0,8,56" Grid.Row="1" Height="24" VerticalAlignment="Bottom" Value="{Binding Server.CurrentProgress}" />
+
+        <TextBlock HorizontalAlignment="Left" Margin="8,0,0,36" Grid.Row="1" Text="{x:Static res:Resource.TotalProgressBox}" VerticalAlignment="Bottom" />
+        <TextBlock HorizontalAlignment="Right" Margin="0,0,8,36" Grid.Row="1" VerticalAlignment="Bottom">
+            <Run Text="{Binding Server.TotalProgress}" />
+			<Run Text="%" />
+        </TextBlock>
+        <ProgressBar Height="24" Margin="8,0,8,8" Grid.Row="1" VerticalAlignment="Bottom" Value="{Binding Server.TotalProgress}" />
+    </Grid>
+</Window>

@@ -1,0 +1,55 @@
+﻿<Window x:Class="SRF.View.SendView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:SRF.Converters"
+        xmlns:res="clr-namespace:SRF.Resources"
+        Title="{x:Static res:Resource.SendTitle}" Width="480" Height="289" WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Window.Resources>
+        <Style TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
+	<Grid>
+		<TextBlock HorizontalAlignment="Left" Margin="8,11,0,0" TextWrapping="Wrap" Text="{x:Static res:Resource.AddressBox}" VerticalAlignment="Top" />
+        <TextBox Margin="62,8,92,0" VerticalAlignment="Top">
+            <TextBox.Text>
+                <Binding Path="Address">
+                    <Binding.ValidationRules>
+                        <converters:IPAddressValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <TextBox Margin="0,8,8,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="80" Text="{Binding Port}" />
+        
+		<TextBlock HorizontalAlignment="Left" Margin="8,34,0,0" TextWrapping="Wrap" Text="{x:Static res:Resource.ItemsBox}" VerticalAlignment="Top" />
+        <ListView Margin="62,34,8,43" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem}" SelectionMode="Single">
+			<ListView.View>
+				<GridView>
+					<GridViewColumn Header="Path" Width="320" DisplayMemberBinding="{Binding Path}" />
+                    <GridViewColumn Header="Type" Width="50" DisplayMemberBinding="{Binding Type}" />
+				</GridView>
+			</ListView.View>
+		</ListView>
+		<Button HorizontalAlignment="Left" Margin="34,58,0,168" Width="24" Height="24" Command="{Binding AddFileCommand}">
+            <Image Source="../images/add_file.png" Width="16" Height="16" />
+		</Button>
+        <Button HorizontalAlignment="Left" Margin="34,84,0,142" Width="24" Height="24" Command="{Binding AddFolderCommand}">
+			<Image Source="../images/add_folder.png" Width="16" Height="16" />
+		</Button>
+        <Button HorizontalAlignment="Left" Margin="34,110,0,116" Width="24" Height="24" Command="{Binding RemoveCommand}">
+			<Image Source="../images/remove.png" Width="16" Height="16" />
+		</Button>
+        
+		<Grid Background="#FFEFEFEF" Height="39" VerticalAlignment="Bottom">
+            <Button Content="{x:Static res:Resource.OKButton}" HorizontalAlignment="Right" Margin="0,10,87,8" Width="75" Command="{Binding OKCommand}" IsDefault="True" />
+            <Button Content="{x:Static res:Resource.CancelButton}" HorizontalAlignment="Right" Margin="0,0,8,8" VerticalAlignment="Bottom" Width="75" IsCancel="True" />
+		</Grid>
+	</Grid>
+</Window>
